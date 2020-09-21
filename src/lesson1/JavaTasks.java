@@ -2,6 +2,9 @@ package lesson1;
 
 import kotlin.NotImplementedError;
 
+import java.io.*;
+import java.util.*;
+
 @SuppressWarnings("unused")
 public class JavaTasks {
     /**
@@ -34,9 +37,65 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortTimes(String inputName, String outputName) {
-        throw new NotImplementedError();
+    //Трудоемкость= O(N*logN)
+    //Ресурсоемкость = O(N), где N- количество строк во входном файле
+    static public void sortTimes(String inputName, String outputName) throws IOException {
+        ArrayList<Integer> day = new ArrayList<>();
+        ArrayList<Integer> night = new ArrayList<>();
+        String line;
+        int hour, minute, second, dayNight, amountOfTime;
+        int count = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
+            while ((line = reader.readLine()) != null) {
+                if (!line.trim().matches("[01][0-9]:[0-5][0-9]:[0-5][0-9] [AP]M")) { // проверяем соответствие формату
+                    throw new IOException();
+                }
+                hour = Integer.parseInt(line.substring(0, 2));
+                if (hour ==12) { // присваиваем часам 0, т.к. отсчет начинается с 12 и это время должно быть наименьшим
+                    hour =0;
+                }
+                minute = Integer.parseInt(line.substring(3, 5));
+                second = Integer.parseInt(line.substring(6, 8));
+                amountOfTime = 3600*hour + 60*minute + second;
+
+                if (line.substring(9, 11).equals("AM")) {     // делим на два списка: "дневной" и "ночной"
+                    day.add(amountOfTime);
+                } else if (line.substring(9, 11).equals("PM")) {
+                    night.add(amountOfTime);
+                }
+            }
+        }
+
+        Collections.sort(day);  //сортировка слиянием: O(N*logN)
+        Collections.sort(night);  //O(N*logN)
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputName))) { // записываем в файл отформатированные элементы дневного и вечернего списков
+            StringBuilder build = new StringBuilder();
+            day.forEach(s->build.append(formatter(s)).append("AM").append("\n"));
+            night.forEach(s->build.append(formatter(s)).append("PM").append("\n"));
+
+            writer.write(build.toString());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
+
     }
+
+    private static String formatter(int time) {  // получаем строку в 12- часовом формате из времени в секундах
+        int hour, minute, second;
+        Formatter form = new Formatter();
+
+        hour = time/3600;
+        if (hour ==0) { // меняем обратно, т.к. приводим к 12-часовому формату
+            hour =12;
+        }
+        minute = time/60%60;
+        second = time%60;
+        return String.valueOf(form.format("%02d:%02d:%02d ",hour,minute,second));
+
+    }
+
 
     /**
      * Сортировка адресов
@@ -131,8 +190,59 @@ public class JavaTasks {
      * 2
      * 2
      */
-    static public void sortSequence(String inputName, String outputName) {
-        throw new NotImplementedError();
+    static public void sortSequence(String inputName, String outputName) throws FileNotFoundException {
+        ArrayList<Integer> numbers = new ArrayList<>();
+        ArrayList<String> properNumbers = new ArrayList<>();
+        ArrayList<String> otherNumbers = new ArrayList<>();
+        Map<Integer,Integer> sorting = new TreeMap<>(); // key - само число, value - счетчик количества повторов
+
+        int maxNumber=0; // числа, встречающиеся максимальное количество раз
+        int maxRepeat=Integer.MIN_VALUE; // сколько раз повторяются
+        int stringToInteger;
+        String line;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
+            while ((line = reader.readLine()) != null) {
+                stringToInteger = Integer.parseInt(line);
+                numbers.add(stringToInteger);
+                if (sorting.containsKey(stringToInteger)) { // если встречается - увеличиваем количество повторов
+                    sorting.put(stringToInteger, sorting.get(stringToInteger) + 1);
+                } else {
+                    sorting.put(stringToInteger, 0);
+                }
+
+                if (sorting.get(stringToInteger) > maxRepeat || (sorting.get(stringToInteger) == maxRepeat && stringToInteger < maxNumber)) { // ищем число с максимальное количеством повторов, если таких несколько - выбираем меньшее
+
+                    maxNumber = stringToInteger;
+                    maxRepeat = sorting.get(stringToInteger);
+                }
+            }
+            int finalMaxNumber = maxNumber;
+            numbers.forEach(number->{
+                if(number== finalMaxNumber) {
+                    properNumbers.add(number.toString()); // записываем maxNumber
+                }
+                else{
+                    otherNumbers.add(number.toString()); // записываем остальные
+                }
+            });
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputName))) {
+
+            StringBuilder build = new StringBuilder();
+            otherNumbers.forEach(s->build.append(s).append("\n")); // сначала обычные числа
+            properNumbers.forEach(s->build.append(s).append("\n")); // потом отобранные
+
+            writer.write(String.valueOf(build));
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+
     }
 
     /**

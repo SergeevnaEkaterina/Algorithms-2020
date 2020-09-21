@@ -45,6 +45,25 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        try {
+            sortTimes("input/time_in4.txt", "temp.txt")     //краевой случай
+            assertFileContent(
+                "temp.txt",
+                """
+                     12:00:00 AM
+                     12:00:00 AM
+                     12:00:00 PM
+                     12:00:00 PM
+                     
+                     
+                    
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+
+
     }
 
     protected fun sortAddresses(sortAddresses: (String, String) -> Unit) {

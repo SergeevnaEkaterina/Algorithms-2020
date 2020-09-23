@@ -137,6 +137,41 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        try {
+            sortTemperatures("input/temp_in2.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                    -100.0
+                    -100.0
+                    -96.3
+                    -28.6
+                    1.6
+                    35.9
+                    65.4
+                    65.4
+                  
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortTemperatures("input/temp_in3.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                    -0.01
+                    -0.01
+                    -0.01
+                    0.01
+                  
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+
 
         fun testGeneratedTemperatures(size: Int): PerfResult<Unit> {
             try {
@@ -296,6 +331,47 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+        try {
+            sortSequence("input/seq_in6.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                     
+            12
+            95
+            16
+            89
+            100
+            326
+            100
+            46
+            46
+                    """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+
+        try {
+            sortSequence("input/seq_in7.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                    
+            36
+            1
+            1
+            1
+            36
+            0
+            0
+            0
+                    """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+
 
         fun testGeneratedSequence(totalSize: Int, answerSize: Int): PerfResult<Unit> {
             try {

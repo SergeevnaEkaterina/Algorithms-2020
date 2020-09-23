@@ -37,7 +37,7 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    //Трудоемкость= O(N*logN)
+    //Трудоемкость= O(N*logN) - по стандарту в Collections.sort() используется mergeSort
     //Ресурсоемкость = O(N), где N- количество строк во входном файле
     static public void sortTimes(String inputName, String outputName) throws IOException {
         ArrayList<Integer> day = new ArrayList<>();
@@ -157,8 +157,42 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+    //Трудоёмкость = O(N^2), проходимся по элементам map дважды
+    //Ресурсоёмкость = О(N) , где N- количество строк во входном файле
+
+    static public void sortTemperatures(String inputName, String outputName) throws IOException {
+        String line;
+        double stringToDouble;
+        Map<Double,Integer> temperature = new TreeMap<>(); // key-значение температуры value-счетчик количества повторов, TreeMap хранит пары, отсортированные по ключам
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputName))) {
+            while ((line = reader.readLine()) != null) {
+                stringToDouble = Double.parseDouble(line);
+                if(!temperature.containsKey(stringToDouble)) {
+                    temperature.put(stringToDouble, 1); // встретилось 1 раз
+                }
+                else temperature.put(stringToDouble,temperature.get(stringToDouble)+1); //увеличиваем количество повторов
+            }
+
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputName))) {
+
+            Iterator<Map.Entry<Double, Integer>> entryIterator = temperature.entrySet().iterator();
+            if (entryIterator.hasNext()) {
+                do {  // перебираем элементы map
+                    Map.Entry<Double, Integer> entry = entryIterator.next();
+                    for (int i = 1; i <= entry.getValue(); i++) {   //для каждого повторения записываем значение температуры
+                        writer.write(entry.getKey() + "\n");
+                    }
+                } while (entryIterator.hasNext());
+            }
+
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException(e);
+        }
     }
 
     /**
@@ -190,10 +224,12 @@ public class JavaTasks {
      * 2
      * 2
      */
+    //Трудоёмкость = O(N)
+    //Ресурсоёмкость = O(N), где N - количество строк во входном файле
     static public void sortSequence(String inputName, String outputName) throws FileNotFoundException {
         ArrayList<Integer> numbers = new ArrayList<>();
-        ArrayList<String> properNumbers = new ArrayList<>();
-        ArrayList<String> otherNumbers = new ArrayList<>();
+        ArrayList<String> properNumbers = new ArrayList<>(); // числа с максимальным повтором
+        ArrayList<String> otherNumbers = new ArrayList<>(); // остальные числа
         Map<Integer,Integer> sorting = new TreeMap<>(); // key - само число, value - счетчик количества повторов
 
         int maxNumber=0; // числа, встречающиеся максимальное количество раз
@@ -216,6 +252,7 @@ public class JavaTasks {
                     maxNumber = stringToInteger;
                     maxRepeat = sorting.get(stringToInteger);
                 }
+
             }
             int finalMaxNumber = maxNumber;
             numbers.forEach(number->{

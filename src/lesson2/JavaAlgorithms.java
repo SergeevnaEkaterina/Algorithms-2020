@@ -3,6 +3,8 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
+import java.util.Arrays;
+
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
     /**
@@ -111,7 +113,23 @@ public class JavaAlgorithms {
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
      */
+    //Трудоёмкость = O(N*log(logN))
+    //Ресурсоёмкость = N, где N = limit
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        if (limit <= 1) return 0;
+        int[] sifter = new int [limit+1] ;
+        sifter[1] = 0; // 1 не является простым
+        for(int x=2; x<=limit; x++) { // заполняем решето Эратосфена единицами
+            sifter[x] = 1;
+        }
+        for(int x =2; Math.pow(x,2) <=limit; x++){
+            if(sifter[x]==1){  // x простое
+                for(int y = (int) Math.pow(x,2); y<=limit; y+=x){  // обнуляем числа кратные x
+                    sifter[y]=0;
+
+                }
+            }
+        }
+        return (int) Arrays.stream(sifter).filter(t->t==1).count(); // считаем количество "единичных" чисел
     }
 }

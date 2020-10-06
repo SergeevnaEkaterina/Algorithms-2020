@@ -40,8 +40,8 @@ public class JavaTasks {
     //Трудоемкость= O(N*logN) - по стандарту в Collections.sort() используется mergeSort
     //Ресурсоемкость = O(N), где N- количество строк во входном файле
     static public void sortTimes(String inputName, String outputName) throws IOException {
-        ArrayList<Integer> day = new ArrayList<>();
-        ArrayList<Integer> night = new ArrayList<>();
+        List<Integer> day = new ArrayList<>();
+        List<Integer> night = new ArrayList<>();
         String line;
         int hour, minute, second, dayNight, amountOfTime;
         int count = 0;
@@ -66,8 +66,8 @@ public class JavaTasks {
             }
         }
 
-        Collections.sort(day);  //сортировка слиянием: O(N*logN)
-        Collections.sort(night);  //O(N*logN)
+        Collections.sort(day);
+        Collections.sort(night);
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputName))) { // записываем в файл отформатированные элементы дневного и вечернего списков
             StringBuilder build = new StringBuilder();
@@ -157,7 +157,7 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    //Трудоёмкость = O(N^2), проходимся по элементам map дважды
+    //Трудоёмкость = O(N^2), проходимся по элементам map дважды: во внешнем цикле итератором и во внутреннем for, когда записываем ключи
     //Ресурсоёмкость = О(N) , где N- количество строк во входном файле
 
     static public void sortTemperatures(String inputName, String outputName) throws IOException {
@@ -227,9 +227,9 @@ public class JavaTasks {
     //Трудоёмкость = O(N)
     //Ресурсоёмкость = O(N), где N - количество строк во входном файле
     static public void sortSequence(String inputName, String outputName) throws FileNotFoundException {
-        ArrayList<Integer> numbers = new ArrayList<>();
-        ArrayList<String> properNumbers = new ArrayList<>(); // числа с максимальным повтором
-        ArrayList<String> otherNumbers = new ArrayList<>(); // остальные числа
+        List<Integer> numbers = new ArrayList<>();
+        List<String> properNumbers = new ArrayList<>(); // числа с максимальным повтором
+        List<String> otherNumbers = new ArrayList<>(); // остальные числа
         Map<Integer,Integer> sorting = new TreeMap<>(); // key - само число, value - счетчик количества повторов
 
         int maxNumber=0; // числа, встречающиеся максимальное количество раз

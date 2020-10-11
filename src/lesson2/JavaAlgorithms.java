@@ -99,8 +99,27 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
-    static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+    //Трудоемкость = O(first.length()*second.length()), так как вложенный цикл for
+    //Ресурсоемкость = O(first.length()*second.length())
+    static public String longestCommonSubstring(String first, String second) {
+        String longestString = "";//наибольшая общая подстрока
+
+     for(int i=0;i<first.length();i++){ //O(first.length())
+         for(int j=0;j<second.length();j++){ //O(second.length())
+             int enumerator = 0; //счетчик индекса общей подстроки
+             StringBuilder intermediateString= new StringBuilder(); //текущая подстрока
+          while(i+enumerator<first.length()&&j+enumerator<second.length()&&first.charAt(i+enumerator)==second.charAt(j+enumerator)){//пока есть совпадения
+
+              intermediateString.append(first.charAt(i + enumerator)); //приписываем символ к текущей подстроке и увеличиваем индекс
+                  enumerator++;
+
+          }
+          if(intermediateString.length()>longestString.length()) { // фиксируем самую длинную общую подстроку
+              longestString= String.valueOf(intermediateString);
+          }
+         }
+     }
+     return longestString;
     }
 
     /**
@@ -119,7 +138,7 @@ public class JavaAlgorithms {
         if (limit <= 1) return 0;
         int[] sifter = new int [limit+1] ;
         sifter[1] = 0; // 1 не является простым
-        for(int x=2; x<=limit; x++) { // заполняем решето Эратосфена единицами
+        for(int x=2; x<=limit; x++) { // заполняем решето Эратосфена единицами, изначально полагаем все числа простыми
             sifter[x] = 1;
         }
         for(int x =2; Math.pow(x,2) <=limit; x++){

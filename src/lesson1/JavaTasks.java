@@ -224,7 +224,7 @@ public class JavaTasks {
      * 2
      * 2
      */
-    //Трудоёмкость = O(N)
+    //Трудоёмкость = O(logN)
     //Ресурсоёмкость = O(N), где N - количество строк во входном файле
     static public void sortSequence(String inputName, String outputName) throws FileNotFoundException {
         List<Integer> numbers = new ArrayList<>();
@@ -274,7 +274,6 @@ public class JavaTasks {
             StringBuilder build = new StringBuilder();
             otherNumbers.forEach(s->build.append(s).append("\n")); // сначала обычные числа
             properNumbers.forEach(s->build.append(s).append("\n")); // потом отобранные
-
             writer.write(String.valueOf(build));
         } catch (IOException e) {
             throw new IllegalArgumentException(e);

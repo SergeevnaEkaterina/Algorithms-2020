@@ -119,12 +119,12 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                 return false;
         }
 
-        //Случай 1: у удаляемого нет потомков (лист), в этом случае безболезненно удаляем этот лист
+       //Случай 1: у удаляемого нет потомков (лист), в этом случае безболезненно удаляем этот лист
         if (currentNode.right == null && currentNode.left == null) {
             delete(currentNode, parentNode);
         }
 
-        //Случай 2: у удаляемого 1 потомок, в этом случае заменяем удаляемый узел его единственным потомком
+       //Случай 2: у удаляемого 1 потомок, в этом случае заменяем удаляемый узел его единственным потомком
 
         else if (currentNode.right == null) {   // Случай 2.1: есть левый потомок
             delete(currentNode, parentNode, currentNode.left);
@@ -133,8 +133,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         }
 
 
-        //Случай 3: у удаляемого есть правый и левый потомок, в этом случае место удаляемого узла занимает левый лист из правого поддерева от удаляемого(value следующее после удаляемого).
-        // То есть на месте удаляемого оказывается узел, меньший любого правого узла -> наименьшее значение (левый лист) в правом поддереве
+       //Случай 3: у удаляемого есть правый и левый потомок, в этом случае место удаляемого узла занимает левый лист из правого поддерева от удаляемого(value следующее после удаляемого).
+       // То есть на месте удаляемого оказывается узел, меньший любого правого узла -> наименьшее значение (левый лист) в правом поддереве
 
         else {
             Node<T> leafParent = currentNode;
@@ -188,8 +188,6 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     }
 
 
-
-
     @NotNull
     @Override
     public Iterator<T> iterator() {
@@ -197,12 +195,17 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     }
 
     public class BinarySearchTreeIterator implements Iterator<T> {
-
+        private Stack<Node<T>> stack = new Stack<>(); //FIFO
+        private T currentValue;
 
         private BinarySearchTreeIterator() {
-
-
+            Node<T> node = root;
+            while (node != null) {  // помещаем в стек узлы от корня до левого листа
+                stack.push(node);
+                node = node.left;
+            }
         }
+
 
         /**
          * Проверка наличия следующего элемента
@@ -214,10 +217,11 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          * <p>
          * Средняя
          */
-
+        //Трудоёмкость = O(1) = const
+        //Ресурсоёмкость = O(1) = const
         @Override
         public boolean hasNext() {
-            throw new NotImplementedError();
+            return !stack.isEmpty();
         }
 
         /**
@@ -233,11 +237,23 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          * <p>
          * Средняя
          */
-
+        //Трудоёмкость = O(N)
+        //Ресурсоёмкость = O(1)
         @Override
         public T next() {
-          //TODO
-            throw new NotImplementedError();
+
+            Node<T> node = stack.pop();
+            currentValue = node.value;
+            if (node.right != null) {
+                node = node.right;     // идем в правое поддерево -> больших элементов
+                while (node != null) {  // следующий по значению элемент = левый лист
+                    stack.push(node);
+                    node = node.left;
+                }
+            }
+            if (currentValue == null) throw new NoSuchElementException(); // если все элементы были возвращены
+            return currentValue;
+
         }
 
         /**
@@ -252,11 +268,16 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          * <p>
          * Сложная
          */
+        //Трудоёмкость = O(h), где h - высота дерева; O(h) = O (logN) в среднем случае, где N - количество узлов. В среднем случае h = logN, в худшем h = N (если дерево несбалансировано)
+        //Ресурсоёмкость = O(1) = const
         @Override
         public void remove() {
 
-          //TODO
-            throw new NotImplementedError();
+            if (currentValue == null) {
+                throw new IllegalStateException();
+            }
+            BinarySearchTree.this.remove(currentValue);
+            currentValue = null;
         }
 
     }
@@ -281,6 +302,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
+        // TODO
         throw new NotImplementedError();
     }
 

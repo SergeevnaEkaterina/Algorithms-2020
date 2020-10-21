@@ -122,6 +122,7 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("Initial set: $controlSet")
             val binarySet = create()
+            assertFalse(binarySet.remove(toRemove));
             for (element in controlSet) {
                 binarySet += element
             }

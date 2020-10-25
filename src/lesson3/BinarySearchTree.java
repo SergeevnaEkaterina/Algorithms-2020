@@ -195,7 +195,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     }
 
     public class BinarySearchTreeIterator implements Iterator<T> {
-        private Stack<Node<T>> stack = new Stack<>(); //FIFO
+        private Stack<Node<T>> stack = new Stack<>(); //LIFO
         private T currentValue;
 
         private BinarySearchTreeIterator() {
@@ -298,7 +298,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      * <p>
      * Очень сложная (в том случае, если спецификация реализуется в полном объёме)
      */
-
+    // Трудоемкость = O(1)
+    //Ресурсоемкость = O(1)
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
@@ -319,6 +320,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      * <p>
      * Сложная
      */
+    // Трудоемкость = O(1)
+    //Ресурсоемкость = O(1)
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
@@ -339,6 +342,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      * <p>
      * Сложная
      */
+    // Трудоемкость = O(1)
+    //Ресурсоемкость = O(1)
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {

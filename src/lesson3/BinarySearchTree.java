@@ -302,8 +302,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
-        // TODO
-        throw new NotImplementedError();
+        return new subTree(this, fromElement, toElement);
     }
 
     /**
@@ -323,8 +322,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        // TODO
-        throw new NotImplementedError();
+        return new subTree(this, null, toElement);
     }
 
     /**
@@ -344,8 +342,58 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        // TODO
-        throw new NotImplementedError();
+        return new subTree(this, fromElement, null);
+    }
+
+    public class subTree extends BinarySearchTree<T> {
+        private BinarySearchTree<T> binarySearchTree;
+        private T toElement, fromElement;
+
+        public subTree(BinarySearchTree<T> tree, T fromElement, T toElement) {
+            this.binarySearchTree = tree;
+            this.fromElement = fromElement;
+            this.toElement = toElement;
+        }
+
+        private boolean isInRange(T item) { //проверка, входит ли элемент в заданный диапазон
+            return (fromElement == null && item.compareTo(toElement) < 0) || (toElement == null && item.compareTo(fromElement) >= 0)
+                    || (fromElement != null && toElement != null && item.compareTo(fromElement) >= 0 && item.compareTo(toElement) < 0);
+        }
+
+        @Override
+        public boolean add(T item) {
+            if (isInRange(item)) {
+                return binarySearchTree.add(item);
+
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            T item = (T) o;
+            if (isInRange(item)) {
+                return binarySearchTree.contains(o);
+            }
+            return false;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            if (contains(o)) {
+                return binarySearchTree.remove(o);
+            } else {
+                throw new IllegalArgumentException();
+            }
+        }
+
+
+        @Override
+        public int size() {
+            return (int) BinarySearchTree.this.stream().filter(this::isInRange).count();
+        }
+
     }
 
     @Override

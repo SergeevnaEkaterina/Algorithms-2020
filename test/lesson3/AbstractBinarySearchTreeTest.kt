@@ -473,6 +473,45 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+
+        val controlSet = TreeSet<Int>()
+        controlSet.addAll(arrayOf(18, 22, 40, 19, 16, 15, 88, 96, 32, 15))
+        val initialSet = create()
+
+        for (element in controlSet) {
+            initialSet.add(element)
+        }
+        println("Control set: $controlSet")
+        val fromElement = 40
+        val toElement = 96
+        val subSet = initialSet.subSet(fromElement, toElement)
+        println("Checking if the boundaries of the subset from $fromElement to $toElement are respected...")
+        for (element in controlSet) {
+            assertEquals(
+                element in fromElement until toElement, subSet.contains(element),
+                "$element is ${if (element in subSet) "" else "not"} in the subset when it should ${if (element in subSet) "not" else ""} be."
+            )
+            if (element in fromElement until toElement) {
+                assertTrue(
+                    subSet.remove(element),
+                    "An element of the subset was not removed."
+                )
+            } else {
+                assertFailsWith<IllegalArgumentException>("An illegal argument was passed to remove() without raising an exception") {
+                    subSet.remove(element)
+                }
+            }
+        }
+        val validAddition = toElement - 1
+        assertDoesNotThrow("An exception is thrown on the attempt of adding a valid element") {
+            subSet.add(validAddition)
+        }
+        val invalidAddition = fromElement - 1
+        assertFailsWith<IllegalArgumentException>("An illegal argument was passed to add() without raising an exception") {
+            subSet.add(invalidAddition)
+        }
+        println("All clear!")
+
     }
 
     protected fun doSubSetRelationTest() {
@@ -528,6 +567,43 @@ abstract class AbstractBinarySearchTreeTest {
             )
             println("All clear!")
         }
+        val controlSet = TreeSet<Int>()
+        controlSet.addAll(arrayOf(1, 2, 5, 7, 88, 100, 135, 200, 9, 11, 13, 15))
+        val initialSet = create()
+
+        for (element in controlSet) {
+            initialSet.add(element)
+        }
+        println("Control set: $controlSet")
+        val fromElement = 2
+        val toElement = 200
+        val subSet = initialSet.subSet(fromElement, toElement)
+        println("Checking if the boundaries of the subset from $fromElement to $toElement are respected...")
+        for (element in controlSet) {
+            assertEquals(
+                element in fromElement until toElement, subSet.contains(element),
+                "$element is ${if (element in subSet) "" else "not"} in the subset when it should ${if (element in subSet) "not" else ""} be."
+            )
+            if (element in fromElement until toElement) {
+                assertTrue(
+                    subSet.remove(element),
+                    "An element of the subset was not removed."
+                )
+            } else {
+                assertFailsWith<IllegalArgumentException>("An illegal argument was passed to remove() without raising an exception") {
+                    subSet.remove(element)
+                }
+            }
+        }
+        val validAddition = toElement - 1
+        assertDoesNotThrow("An exception is thrown on the attempt of adding a valid element") {
+            subSet.add(validAddition)
+        }
+        val invalidAddition = fromElement - 1
+        assertFailsWith<IllegalArgumentException>("An illegal argument was passed to add() without raising an exception") {
+            subSet.add(invalidAddition)
+        }
+        println("All clear!")
     }
 
     protected fun doSubSetFirstAndLastTest() {
@@ -636,6 +712,43 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+        val controlSet = TreeSet<Int>()
+        controlSet.addAll(arrayOf(1, 2, 5, 7, 88, 100, 135, 200, 9, 11, 13, 15))
+        val initialSet = create()
+
+        for (element in controlSet) {
+            initialSet.add(element)
+        }
+        println("Control set: $controlSet")
+        val toElement = 88
+        val headSet = initialSet.headSet(toElement)
+        println("Checking if the boundaries of the headset to $toElement are respected...")
+        for (element in controlSet) {
+            assertEquals(
+                element < toElement, headSet.contains(element),
+                "$element is ${if (element in headSet) "" else "not"} in the headset when it should ${if (element in headSet) "not" else ""} be."
+            )
+            if (element < toElement) {
+                assertTrue(
+                    headSet.remove(element),
+                    "An element of the headset was not removed."
+                )
+            } else {
+                assertFailsWith<IllegalArgumentException>("An illegal argument was passed to remove() without raising an exception") {
+                    headSet.remove(element)
+                }
+            }
+        }
+        val validAddition = toElement - 1
+        assertDoesNotThrow("An exception is thrown on the attempt of adding a valid element") {
+            headSet.add(validAddition)
+        }
+        val invalidAddition = toElement + 1
+        assertFailsWith<IllegalArgumentException>("An illegal argument was passed to add() without raising an exception") {
+            headSet.add(invalidAddition)
+        }
+        println("All clear!")
+
     }
 
     protected fun doHeadSetRelationTest() {
@@ -690,6 +803,58 @@ abstract class AbstractBinarySearchTreeTest {
             )
             println("All clear!")
         }
+        implementationTest { create().headSet(63) }
+
+        for (iteration in 1..100) {
+            val initialSet = create()
+            val toElement = 25
+            val headSet = initialSet.headSet(toElement)
+            println("Checking if the headset to $toElement is a valid view of the initial set...")
+            var allElementCounter = 0
+            var validElementCounter = 0
+            for (i in 1..50) {
+                val value = random.nextInt(100)
+                if (value < toElement) {
+                    if (random.nextBoolean()) {
+                        if (initialSet.add(value)) {
+                            allElementCounter++
+                            validElementCounter++
+                        }
+                        assertTrue(
+                            headSet.contains(value),
+                            "A headset doesn't contain a valid element of the initial set."
+                        )
+                    } else {
+                        if (headSet.add(value)) {
+                            allElementCounter++
+                            validElementCounter++
+                        }
+                        assertTrue(
+                            initialSet.contains(value),
+                            "The initial set doesn't contain an element of the headset."
+                        )
+                    }
+                } else {
+                    if (initialSet.add(value)) {
+                        allElementCounter++
+                    }
+                    assertFalse(
+                        headSet.contains(value),
+                        "A headset contains an illegal element of the initial set."
+                    )
+                }
+            }
+            assertEquals(
+                allElementCounter, initialSet.size,
+                "The size of the initial set is not as expected."
+            )
+            assertEquals(
+                validElementCounter, headSet.size,
+                "The size of the headset is not as expected."
+            )
+            println("All clear!")
+        }
+
     }
 
     protected fun doTailSetTest() {
@@ -734,6 +899,42 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+        val controlSet = TreeSet<Int>()
+        controlSet.addAll(arrayOf(1, 2, 5, 7, 88, 100, 135, 200, 9, 11, 13, 15))
+        val initialSet = create()
+
+        for (element in controlSet) {
+            initialSet.add(element)
+        }
+        println("Control set: $controlSet")
+        val toElement = 100
+        val headSet = initialSet.headSet(toElement)
+        println("Checking if the boundaries of the headset to $toElement are respected...")
+        for (element in controlSet) {
+            assertEquals(
+                element < toElement, headSet.contains(element),
+                "$element is ${if (element in headSet) "" else "not"} in the headset when it should ${if (element in headSet) "not" else ""} be."
+            )
+            if (element < toElement) {
+                assertTrue(
+                    headSet.remove(element),
+                    "An element of the headset was not removed."
+                )
+            } else {
+                assertFailsWith<IllegalArgumentException>("An illegal argument was passed to remove() without raising an exception") {
+                    headSet.remove(element)
+                }
+            }
+        }
+        val validAddition = toElement - 1
+        assertDoesNotThrow("An exception is thrown on the attempt of adding a valid element") {
+            headSet.add(validAddition)
+        }
+        val invalidAddition = toElement + 1
+        assertFailsWith<IllegalArgumentException>("An illegal argument was passed to add() without raising an exception") {
+            headSet.add(invalidAddition)
+        }
+        println("All clear!")
     }
 
     protected fun doTailSetRelationTest() {
@@ -742,6 +943,57 @@ abstract class AbstractBinarySearchTreeTest {
         for (iteration in 1..100) {
             val initialSet = create()
             val fromElement = random.nextInt(100)
+            val tailSet = initialSet.tailSet(fromElement)
+            println("Checking if the tailset from $fromElement is a valid view of the initial set...")
+            var allElementCounter = 0
+            var validElementCounter = 0
+            for (i in 1..50) {
+                val value = random.nextInt(100)
+                if (value >= fromElement) {
+                    if (random.nextBoolean()) {
+                        if (initialSet.add(value)) {
+                            allElementCounter++
+                            validElementCounter++
+                        }
+                        assertTrue(
+                            tailSet.contains(value),
+                            "A tailset doesn't contain a valid element of the initial set."
+                        )
+                    } else {
+                        if (tailSet.add(value)) {
+                            allElementCounter++
+                            validElementCounter++
+                        }
+                        assertTrue(
+                            initialSet.contains(value),
+                            "The initial set doesn't contain an element of the tailset."
+                        )
+                    }
+                } else {
+                    if (initialSet.add(value)) {
+                        allElementCounter++
+                    }
+                    assertFalse(
+                        tailSet.contains(value),
+                        "A tailset contains an illegal element of the initial set."
+                    )
+                }
+            }
+            assertEquals(
+                allElementCounter, initialSet.size,
+                "The size of the initial set is not as expected."
+            )
+            assertEquals(
+                validElementCounter, tailSet.size,
+                "The size of the tailset is not as expected."
+            )
+            println("All clear!")
+        }
+        implementationTest { create().tailSet(10) }
+
+        for (iteration in 1..100) {
+            val initialSet = create()
+            val fromElement = 15
             val tailSet = initialSet.tailSet(fromElement)
             println("Checking if the tailset from $fromElement is a valid view of the initial set...")
             var allElementCounter = 0

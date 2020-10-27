@@ -94,7 +94,7 @@ public class JavaGraphTasks {
      * <p>
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
      */
-    
+
     //Трудоемкость O(V + E),где V - вершины графа, E - ребра
     //Ресурсоемкость O(V)
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
@@ -121,8 +121,8 @@ public class JavaGraphTasks {
     }
 
     public static void isGraphCycled(Graph graph) {
-        HashSet<Graph.Vertex> setOfStarts = new HashSet<>();
-        HashSet<Graph.Vertex> setOfEnds = new HashSet<>();
+        Set<Graph.Vertex> setOfStarts = new HashSet<>();
+        Set<Graph.Vertex> setOfEnds = new HashSet<>();
         Set<Graph.Edge> setOfEdges = graph.getEdges();
         Graph.Edge edge;
 

@@ -94,6 +94,7 @@ public class JavaGraphTasks {
      * <p>
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
      */
+    
     //Трудоемкость O(V + E),где V - вершины графа, E - ребра
     //Ресурсоемкость O(V)
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {

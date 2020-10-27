@@ -1,7 +1,9 @@
 package lesson6
 
 import lesson6.impl.GraphBuilder
+import java.lang.IllegalArgumentException
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 abstract class AbstractGraphTests {
@@ -258,6 +260,47 @@ abstract class AbstractGraphTests {
             setOf(cross["A"], cross["B"], cross["C"], cross["D"]),
             cross.largestIndependentVertexSet()
         )
+        val graphTest = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, f)
+            addConnection(c, d)
+
+            addConnection(e, a)
+
+        }.build()
+        assertEquals(
+            setOf(graphTest["B"], graph["D"], graph["E"], graph["F"]),
+            graphTest.largestIndependentVertexSet()
+        )
+        val graphTest2 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, f)
+            addConnection(c, d)
+            addConnection(d, e)
+            addConnection(e, a)
+
+        }.build()
+        assertFailsWith<IllegalArgumentException>("graph is cycled") {
+
+            graphTest2.largestIndependentVertexSet()
+        }
+
     }
 
     fun longestSimplePath(longestSimplePath: Graph.() -> Path) {
@@ -351,6 +394,47 @@ abstract class AbstractGraphTests {
         }.build()
         val longestPath3 = graph3.longestSimplePath()
         assertEquals(6, longestPath3.length)
+
+        val graphTest = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, f)
+            addConnection(c, d)
+            addConnection(e, a)
+
+        }.build()
+        val longestPathTest = graphTest.longestSimplePath()
+        assertEquals(4, longestPathTest.length)
+
+        val graphTest2 = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            val c = addVertex("C")
+            val d = addVertex("D")
+            val e = addVertex("E")
+            val f = addVertex("F")
+            val g = addVertex("G")
+            val h = addVertex("H")
+
+            addConnection(a, b)
+            addConnection(b, c)
+            addConnection(c, f)
+            addConnection(c, d)
+            addConnection(e, a)
+            addConnection(f, g)
+            addConnection(g, h)
+            addConnection(h, b)
+
+        }.build()
+        val longestPathTest2 = graphTest2.longestSimplePath()
+        assertEquals(7, longestPathTest2.length)
     }
 
     fun baldaSearcher(baldaSearcher: (String, Set<String>) -> Set<String>) {

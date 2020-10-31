@@ -121,15 +121,15 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
         //Случай 1: у удаляемого нет потомков (лист), в этом случае безболезненно удаляем этот лист
         if (currentNode.right == null && currentNode.left == null) {
-            delete(currentNode, parentNode);
+            replace(currentNode, parentNode);
         }
 
         //Случай 2: у удаляемого 1 потомок, в этом случае заменяем удаляемый узел его единственным потомком
 
         else if (currentNode.right == null) {   // Случай 2.1: есть левый потомок
-            delete(currentNode, parentNode, currentNode.left);
+            replace(currentNode, parentNode, currentNode.left);
         } else if (currentNode.left == null) {   // Случай 2.1: есть правый потомок
-            delete(currentNode, parentNode, currentNode.right);
+            replace(currentNode, parentNode, currentNode.right);
         }
 
 
@@ -151,7 +151,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                 leaf.right = currentNode.right;   // присваиваем найденному листу потомков удаляемого узла ( currentNode)
             }
             leaf.left = currentNode.left;
-            delete(currentNode, parentNode, leaf);
+            replace(currentNode, parentNode, leaf);
 
         }
 
@@ -161,7 +161,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
 
     }
 
-    public void delete(Node<T> current, Node<T> currentParent, Node<T> replace) {
+    public void replace(Node<T> current, Node<T> currentParent, Node<T> replace) {
         if (current == root) {
             root = replace;
         } else if (currentParent.left == current) {
@@ -171,7 +171,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         }
     }
 
-    public void delete(Node<T> current, Node<T> currentParent) {
+    public void replace(Node<T> current, Node<T> currentParent) {
         if (currentParent.left == current) {
             currentParent.left = null;
         } else {

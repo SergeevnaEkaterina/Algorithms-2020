@@ -104,7 +104,7 @@ public class JavaGraphTasks {
         if (setOfIndependentVertices.isEmpty()) {
             return new HashSet<>();
         }
-        isGraphCycled(graph); //проверка графа на зацикленность
+        requireGraphNotCycled(graph); //проверка графа на зацикленность
 
         for (Graph.Vertex item : graph.getVertices()) {    //для каждой вершины графа:
             if (setOfIndependentVertices.contains(item)) {  //если вершина еще не была удалена из множества независимых
@@ -120,7 +120,7 @@ public class JavaGraphTasks {
         return setOfIndependentVertices;
     }
 
-    public static void isGraphCycled(Graph graph) {
+    public static void requireGraphNotCycled(Graph graph) {
         Set<Graph.Vertex> setOfStarts = new HashSet<>();
         Set<Graph.Vertex> setOfEnds = new HashSet<>();
         Set<Graph.Edge> setOfEdges = graph.getEdges();

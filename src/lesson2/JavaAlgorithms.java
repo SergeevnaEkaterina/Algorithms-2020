@@ -99,28 +99,27 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
-    //Трудоёмкость = O(N^3), где N - длина строки (предполагаем, что обе равны)
-    //Ресурсоёмкость = O(N)
+    //Трудоёмкость = O(N^2), где N - длина строки (предполагаем, что обе равны)
+    //Ресурсоёмкость = O(N^2)
     static public String longestCommonSubstring(String first, String second) {
-        String longestString = ""; //наибольшая общая подстрока
-
-        for (int i = 0; i < first.length(); i++) { //O(first.length())
-            for (int j = 0; j < second.length(); j++) { //O(second.length())
-                int enumerator = 0; //счетчик индекса общей подстроки
-                StringBuilder intermediateString = new StringBuilder(); //текущая подстрока
-                while (i + enumerator < first.length() && j + enumerator < second.length() && first.charAt(i + enumerator) == second.charAt(j + enumerator)) { //пока есть совпадения
-
-                    intermediateString.append(first.charAt(i + enumerator)); //приписываем символ к текущей подстроке и увеличиваем индекс
-                    enumerator++;
-
+        if (first.isEmpty() || second.isEmpty()) return "";
+        int[][] table = new int[first.length() + 1][second.length() + 1];
+        int index = 0, maxLength = 0;
+        for (int i = 1; i <= first.length(); i++) {
+            for (int j = 1; j <= second.length(); j++) {
+                if (first.charAt(i - 1) == second.charAt(j - 1))
+                    table[i][j] = table[i - 1][j - 1] + 1;
+                if (maxLength < table[i][j]) {
+                    maxLength = table[i][j];
+                    index = i;
                 }
-                if (intermediateString.length() > longestString.length()) { // фиксируем самую длинную общую подстроку
-                    longestString = String.valueOf(intermediateString);
-                }
+
             }
+
         }
-        return longestString;
+        return first.substring(index - maxLength, index);
     }
+
 
     /**
      * Число простых чисел в интервале

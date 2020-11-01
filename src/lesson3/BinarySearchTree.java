@@ -348,7 +348,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        return new subTree (this, fromElement, null, false, true);
+        return new subTree(this, fromElement, null, false, true);
     }
 
     public class subTree extends BinarySearchTree<T> {
@@ -409,26 +409,6 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         }
 
 
-        @NotNull
-        @Override
-        public SortedSet<T> subSet(T fromElement, T toElement) {
-            if (fromElement.compareTo(toElement) > 0) throw new NoSuchElementException();
-            return new subTree(tree, fromElement, toElement, false, false);
-        }
-
-        @NotNull
-        @Override
-        public SortedSet<T> headSet(T toElement) {
-            return new subTree(tree, null, toElement, true, false);
-        }
-
-        @NotNull
-        @Override
-        public SortedSet<T> tailSet(T fromElement) {
-            return new subTree(tree, fromElement, null, false, true);
-        }
-
-       
         @Override
         public T first() {
             if (size() == 0) throw new NoSuchElementException();

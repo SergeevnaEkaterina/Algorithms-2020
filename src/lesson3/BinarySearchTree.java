@@ -3,7 +3,6 @@ package lesson3;
 import java.util.*;
 
 
-import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -303,7 +302,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
-        return new subTree(this, fromElement, toElement);
+        return new subTree<>(this,
+                fromElement, toElement, false, false);
     }
 
     /**
@@ -325,7 +325,8 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        return new subTree(this, null, toElement);
+        return new subTree<>(this,
+                null, toElement, true, false);
     }
 
     /**
@@ -347,59 +348,139 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        return new subTree(this, fromElement, null);
+        return new subTree<>(this, fromElement, null, false, true);
     }
 
-    public class subTree extends BinarySearchTree<T> {
-        private BinarySearchTree<T> binarySearchTree;
-        private T toElement, fromElement;
+    public class subTree<T extends Comparable<T>> extends AbstractSet<T> implements CheckableSortedSet<T> {
 
-        public subTree(BinarySearchTree<T> tree, T fromElement, T toElement) {
-            this.binarySearchTree = tree;
+        private BinarySearchTree<T> tree;
+        private T fromElement, toElement;
+        private boolean isStartAvailable, isEndAvailable;
+
+        subTree(BinarySearchTree<T> tree,
+                T fromElement, T toElement, boolean isStartAvailable, boolean isEndAvailable) {
+            this.tree = tree;
             this.fromElement = fromElement;
             this.toElement = toElement;
+            this.isStartAvailable = isStartAvailable;
+            this.isEndAvailable = isEndAvailable;
+
         }
 
-        private boolean isInRange(T item) { //проверка, входит ли элемент в заданный диапазон
+        private boolean isInRange(T item) {                         //проверка, входит ли элемент в заданный диапазон
             return (fromElement == null && item.compareTo(toElement) < 0) || (toElement == null && item.compareTo(fromElement) >= 0)
                     || (fromElement != null && toElement != null && item.compareTo(fromElement) >= 0 && item.compareTo(toElement) < 0);
         }
 
         @Override
-        public boolean add(T item) {
-            if (isInRange(item)) {
-                return binarySearchTree.add(item);
-
-            } else {
-                throw new IllegalArgumentException();
-            }
-        }
-
-        @Override
-        public boolean contains(Object o) {
-            T item = (T) o;
-            if (isInRange(item)) {
-                return binarySearchTree.contains(o);
-            }
-            return false;
+        public boolean add(T t) {
+            if (!isInRange(t)) throw new IllegalArgumentException();
+            return isInRange(t) && tree.add(t);
         }
 
         @Override
         public boolean remove(Object o) {
-            if (contains(o)) {
-                return binarySearchTree.remove(o);
+            T t = (T) o;
+            if (!isInRange(t)) throw new IllegalArgumentException();
+            return isInRange(t) && tree.remove(o);
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            T t = (T) o;
+            return isInRange(t) && tree.contains(o);
+        }
+
+        @Override
+        public Iterator<T> iterator() {
+            return null;
+        }
+
+        @Override
+        public int size() {
+            long result = BinarySearchTree.this.stream().filter(t -> isInRange((T) t)).count();
+            return (int) result;
+        }
+
+        @Nullable
+        @Override
+        public Comparator<? super T> comparator() {
+            return null;
+        }
+
+
+        @NotNull
+        @Override
+        public SortedSet<T> subSet(T fromElement, T toElement) {
+            if (fromElement.compareTo(toElement) > 0) throw new NoSuchElementException();
+            return new subTree<>(tree, fromElement, toElement, false, false);
+        }
+
+        @NotNull
+        @Override
+        public SortedSet<T> headSet(T toElement) {
+            return new subTree<>(tree, null, toElement, true, false);
+        }
+
+        @NotNull
+        @Override
+        public SortedSet<T> tailSet(T fromElement) {
+            return new subTree<>(tree, fromElement, null, false, true);
+        }
+
+        @Override
+        public int height() {
+            return 0;
+        }
+
+        @Override
+        public boolean checkInvariant() {
+            return false;
+        }
+
+        @Override
+        public T first() {
+            if (size() == 0) throw new NoSuchElementException();
+            if (fromElement == null) {
+                return tree.first();
+            } else if (isEndAvailable) {
+                return fromElement;
             } else {
-                throw new IllegalArgumentException();
+                Iterator<T> it = tree.iterator();
+                T curr = null;
+                while (it.hasNext()) {
+                    curr = it.next();
+                    if (curr.compareTo(fromElement) >= 0) {
+                        break;
+                    }
+                }
+                return curr;
+            }
+        }
+
+        @Override
+        public T last() {
+            if (size() == 0) throw new NoSuchElementException();
+            if (toElement == null) {
+                return tree.last();
+            } else {
+                Iterator<T> it = tree.iterator();
+                T curr;
+                T last = null;
+                while (it.hasNext()) {
+                    curr = it.next();
+                    if (curr.compareTo(toElement) >= 0) {
+                        break;
+                    }
+                    last = curr;
+                }
+                return last;
             }
         }
 
 
-        @Override
-        public int size() {
-            return (int) BinarySearchTree.this.stream().filter(this::isInRange).count();
-        }
-
     }
+
 
     @Override
     public T first() {

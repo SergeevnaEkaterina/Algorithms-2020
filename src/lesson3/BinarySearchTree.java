@@ -302,7 +302,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
-        return new subTree<>(this,
+        return new subTree(this,
                 fromElement, toElement, false, false);
     }
 
@@ -325,7 +325,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        return new subTree<>(this,
+        return new subTree(this,
                 null, toElement, true, false);
     }
 
@@ -348,10 +348,10 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        return new subTree<>(this, fromElement, null, false, true);
+        return new subTree (this, fromElement, null, false, true);
     }
 
-    public class subTree<T extends Comparable<T>> extends AbstractSet<T> implements CheckableSortedSet<T> {
+    public class subTree extends BinarySearchTree<T> {
 
         private BinarySearchTree<T> tree;
         private T fromElement, toElement;
@@ -413,31 +413,22 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         @Override
         public SortedSet<T> subSet(T fromElement, T toElement) {
             if (fromElement.compareTo(toElement) > 0) throw new NoSuchElementException();
-            return new subTree<>(tree, fromElement, toElement, false, false);
+            return new subTree(tree, fromElement, toElement, false, false);
         }
 
         @NotNull
         @Override
         public SortedSet<T> headSet(T toElement) {
-            return new subTree<>(tree, null, toElement, true, false);
+            return new subTree(tree, null, toElement, true, false);
         }
 
         @NotNull
         @Override
         public SortedSet<T> tailSet(T fromElement) {
-            return new subTree<>(tree, fromElement, null, false, true);
+            return new subTree(tree, fromElement, null, false, true);
         }
 
-        @Override
-        public int height() {
-            return 0;
-        }
-
-        @Override
-        public boolean checkInvariant() {
-            return false;
-        }
-
+       
         @Override
         public T first() {
             if (size() == 0) throw new NoSuchElementException();

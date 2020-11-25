@@ -93,55 +93,8 @@ public class Trie extends AbstractSet<String> implements Set<String> {
     @NotNull
     @Override
     public Iterator<String> iterator() {
-        return new IteratorOfTree();
+        // TODO
+        throw new NotImplementedError();
     }
-    public class IteratorOfTree implements Iterator<String> {
-        private final Stack<String> stack = new Stack<>();
-        private String nextWord = "";
-        private IteratorOfTree() {
-            addElementsToStack(root, "");
-        }
 
-        private void addElementsToStack(Node currentNode, String word) {
-            if (root != null && !currentNode.children.isEmpty()) {
-                Iterator<Map.Entry<Character, Node>> entryIterator = currentNode.children.entrySet().iterator();
-                if (entryIterator.hasNext()) {
-                    do {  // перебираем элементы map
-                        Map.Entry<Character, Node> entry = entryIterator.next();
-                        Character elem = entry.getKey();
-                        if (elem == 0) {
-                            stack.push(word);  // добавляем элемент в стек
-                        } else {
-                            addElementsToStack(entry.getValue(), word + elem);
-                        }
-                    } while (entryIterator.hasNext());
-                }
-
-            }
-        }
-
-
-        //Трудоемкость = O(1)
-        //Ресурсоемкость = O(1)
-        @Override
-        public boolean hasNext() {
-            return !stack.isEmpty();
-        }
-        //Трудоемкость = O(1)
-        //Ресурсоемкость = O(1)
-        @Override
-        public String next() {
-            if (!hasNext()) throw new IllegalStateException();
-            nextWord = stack.pop();
-            return nextWord;
-        }
-        //Трудоемкость = O(N*logN)
-        //Ресурсоемкость = O(N*logN)
-        @Override
-        public void remove() {
-            if (nextWord.equals("")) throw new IllegalStateException();
-            Trie.this.remove(nextWord);
-            nextWord = "";
-        }
-    }
 }
